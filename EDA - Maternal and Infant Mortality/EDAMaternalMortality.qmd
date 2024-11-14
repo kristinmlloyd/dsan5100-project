@@ -1,0 +1,177 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{r}
+
+library(readr)
+df <- read_csv("Data/ByState.csv")
+head(df)
+
+```
+
+```{r}
+
+options(repos = c(CRAN = "https://cran.r-project.org"))
+install.packages("dplyr")
+library(dplyr)
+
+```
+
+```{r}
+
+df <- df %>%
+  rename(
+    Black = `Maternal Mortality - Mother's Race is Black (2017-2022)`,
+    White = `Maternal Mortality - Mother's Race is White (2017-2022)`
+  )
+
+head(df)
+
+```
+
+```{r}
+
+ggplot() +
+  geom_bar(data = df, aes(x = State, y = Black, fill = "Black"), 
+           stat = "identity", position = "dodge") +
+  geom_bar(data = df, aes(x = State, y = White, fill = "White"), 
+           stat = "identity", position = "dodge") +
+  labs(
+    title = "Maternal Mortality Rates by Race and State",
+    x = "State",
+    y = "Maternal Mortality Rate",
+    fill = "Race"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    plot.title = element_text(size = 18, face = "bold"),
+    legend.position = "top"
+  ) +
+  scale_fill_manual(values = c("Black" = "#1f77b4", "White" = "#ff7f0e"))
+
+
+```
+
+
+```{r}
+
+library(ggplot2)
+library(tidyr)
+
+df_long <- df %>%
+  pivot_longer(cols = c(Black, White), names_to = "Race", values_to = "MortalityRate")
+
+ggplot(df_long, aes(x = Race, y = MortalityRate, fill = Race)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Maternal Mortality Rates by Race",
+    x = "Race",
+    y = "Maternal Mortality Rate"
+  ) +
+  scale_fill_manual(values = c("Black" = "#1f77b4", "White" = "#ff7f0e")) +
+  theme_minimal()
+
+```
+
+```{r}
+
+black_rates <- df$Black
+white_rates <- df$White
+
+black_rates <- na.omit(black_rates)
+white_rates <- na.omit(white_rates)
+
+t_test_result <- t.test(black_rates, white_rates, alternative = "greater")
+
+print(t_test_result)
+
+```
+
+> The p-value is extremely small, much less than the typical significance level of 0.05.
+This means that we can reject the null hypothesis that the maternal mortality rates for Black and White mothers are the same.
+
+```{r}
+
+library(dplyr)
+
+# Rename the columns for easier access
+df <- df %>%
+  rename(
+    Black_Infant = `Total Infant Mortality black`,
+    White_Infant = `Total Infant Mortality white`
+  )
+
+# Display the first few rows to confirm changes
+head(df)
+
+```
+
+```{r}
+
+library(ggplot2)
+
+# Create a bar plot comparing infant mortality rates by state
+ggplot() +
+  geom_bar(data = df, aes(x = State, y = Black_Infant, fill = "Black"), 
+           stat = "identity", position = "dodge") +
+  geom_bar(data = df, aes(x = State, y = White_Infant, fill = "White"), 
+           stat = "identity", position = "dodge") +
+  labs(
+    title = "Infant Mortality Rates by Race and State",
+    x = "State",
+    y = "Infant Mortality Rate",
+    fill = "Race"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    plot.title = element_text(size = 18, face = "bold"),
+    legend.position = "top"
+  ) +
+  scale_fill_manual(values = c("Black" = "#1f77b4", "White" = "#ff7f0e"))
+
+```
+
+```{r}
+
+library(tidyr)
+
+# Convert the data to long format for easier plotting
+df_long <- df %>%
+  pivot_longer(cols = c(Black_Infant, White_Infant), names_to = "Race", values_to = "InfantMortalityRate")
+
+# Create a boxplot to visualize the distribution of infant mortality rates by race
+ggplot(df_long, aes(x = Race, y = InfantMortalityRate, fill = Race)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Infant Mortality Rates by Race",
+    x = "Race",
+    y = "Infant Mortality Rate"
+  ) +
+  scale_fill_manual(values = c("Black" = "#1f77b4", "White" = "#ff7f0e")) +
+  theme_minimal()
+
+```
+
+```{r}
+
+# Extract the data for Black and White infant mortality rates
+black_infant_rates <- df$Black_Infant
+white_infant_rates <- df$White_Infant
+
+# Remove NA values
+black_infant_rates <- na.omit(black_infant_rates)
+white_infant_rates <- na.omit(white_infant_rates)
+
+t_test_result_infant <- t.test(black_infant_rates, white_infant_rates, alternative = "greater")
+
+print(t_test_result_infant)
+
+```
+
+> The p-value is extremely small, much smaller than the typical significance level of 0.05.
+This means that we can reject the null hypothesis that the infant mortality rates for Black and White infants are the same.
+

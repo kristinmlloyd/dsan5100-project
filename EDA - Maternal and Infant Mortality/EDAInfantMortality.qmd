@@ -1,0 +1,21 @@
+---
+title: "EDA - Maternal and Infant Mortality"
+format: html
+---
+
+```{r}
+
+library(readr)
+
+df <- read_csv("Data/ByState.csv")
+head(df)
+
+```
+
+```{r}
+
+
+
+
+
+```
