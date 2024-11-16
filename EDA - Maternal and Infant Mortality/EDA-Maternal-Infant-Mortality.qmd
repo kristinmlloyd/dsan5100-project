@@ -103,7 +103,6 @@ This means that we can reject the null hypothesis
 that the maternal mortality rates for Black and 
 White mothers are the same.
 
-
 ```{r}
 
 # Rename columns for infant mortality rates

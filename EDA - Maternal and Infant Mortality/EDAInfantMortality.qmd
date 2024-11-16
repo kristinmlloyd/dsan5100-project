@@ -11,11 +11,3 @@ df <- read_csv("Data/ByState.csv")
 head(df)
 
 ```
-
-```{r}
-
-
-
-
-
-```
